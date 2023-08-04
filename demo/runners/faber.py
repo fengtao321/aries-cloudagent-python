@@ -404,6 +404,18 @@ async def main(args):
             endorser_role=faber_agent.endorser_role,
             anoncreds_legacy_revocation=faber_agent.anoncreds_legacy_revocation,
         )
+        
+        ircc_schema_name = "student visa schema"
+        ircc_schema_attrs = [
+            "student name",
+            "date of birth",
+            "date of issue",
+            "date of expiration",
+            "category",
+            "document number",
+            "nationality",
+            "timestamp",
+        ]
 
         faber_schema_name = "degree schema"
         faber_schema_attrs = [
@@ -417,8 +429,8 @@ async def main(args):
             faber_agent.public_did = True
             await faber_agent.initialize(
                 the_agent=agent,
-                schema_name=faber_schema_name,
-                schema_attrs=faber_schema_attrs,
+                schema_name=ircc_schema_name,
+                schema_attrs=ircc_schema_attrs,
                 create_endorser_agent=(faber_agent.endorser_role == "author")
                 if faber_agent.endorser_role
                 else False,
@@ -500,8 +512,8 @@ async def main(args):
                 if created:
                     # TODO this fails because the new wallet doesn't get a public DID
                     await faber_agent.create_schema_and_cred_def(
-                        schema_name=faber_schema_name,
-                        schema_attrs=faber_schema_attrs,
+                        schema_name=ircc_schema_name,
+                        schema_attrs=ircc_schema_attrs,
                     )
 
             elif option in "tT":
@@ -831,6 +843,7 @@ if __name__ == "__main__":
             print("pydevd_pycharm library was not found")
 
     try:
+        print('faber argument: ', args)
         asyncio.get_event_loop().run_until_complete(main(args))
     except KeyboardInterrupt:
         os._exit(1)
