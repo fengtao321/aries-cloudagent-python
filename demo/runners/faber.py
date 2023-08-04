@@ -246,29 +246,33 @@ class FaberAgent(AriesAgent):
             if cred_type == CRED_FORMAT_INDY:
                 req_attrs = [
                     {
-                        "name": "name",
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "name": "student name",
+                        "restrictions": [{"schema_name": "ircc_schema_name"}],
                     },
                     {
-                        "name": "date",
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "name": "date of issue",
+                        "restrictions": [{"schema_name": "ircc_schema_name"}],
+                    },
+                    {
+                        "name": "date of expiration",
+                        "restrictions": [{"schema_name": "ircc_schema_name"}],
                     },
                 ]
-                if revocation:
-                    req_attrs.append(
-                        {
-                            "name": "degree",
-                            "restrictions": [{"schema_name": "degree schema"}],
-                            "non_revoked": {"to": int(time.time() - 1)},
-                        },
-                    )
-                else:
-                    req_attrs.append(
-                        {
-                            "name": "degree",
-                            "restrictions": [{"schema_name": "degree schema"}],
-                        }
-                    )
+                # if revocation:
+                #     req_attrs.append(
+                #         {
+                #             "name": "degree",
+                #             "restrictions": [{"schema_name": "degree schema"}],
+                #             "non_revoked": {"to": int(time.time() - 1)},
+                #         },
+                #     )
+                # else:
+                #     req_attrs.append(
+                #         {
+                #             "name": "degree",
+                #             "restrictions": [{"schema_name": "degree schema"}],
+                #         }
+                #     )
                 if SELF_ATTESTED:
                     # test self-attested claims
                     req_attrs.append(
@@ -277,14 +281,20 @@ class FaberAgent(AriesAgent):
                 req_preds = [
                     # test zero-knowledge proofs
                     {
-                        "name": "birthdate_dateint",
+                        "name": "date of issue",
                         "p_type": "<=",
                         "p_value": int(birth_date.strftime(birth_date_format)),
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "restrictions": [{"schema_name": "ircc_schema_name"}],
+                    },
+                    {
+                        "name": "date of expiration",
+                        "p_type": ">=",
+                        "p_value": int(birth_date.strftime(birth_date_format)),
+                        "restrictions": [{"schema_name": "ircc_schema_name"}],
                     }
                 ]
                 indy_proof_request = {
-                    "name": "Proof of Education",
+                    "name": "Proof of Student Visa",
                     "version": "1.0",
                     "requested_attributes": {
                         f"0_{req_attr['name']}_uuid": req_attr for req_attr in req_attrs
