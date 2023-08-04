@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
 shopt -s nocasematch
 
 cd $(dirname $0)
